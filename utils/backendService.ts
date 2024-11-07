@@ -2,7 +2,7 @@ import { LocationObject } from "expo-location";
 
 export const sendPushTokenToBackend = async (token: string, location: LocationObject) => {
   try {
-    const response = await fetch("https://your-backend-url.com/api/update-location", {
+    const response = await fetch("https://solardose-backend.onrender.com/api/update-location", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
