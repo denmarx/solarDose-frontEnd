@@ -50,11 +50,6 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({
 
   useEffect(() => {
 
-    // registerForPushNotificationsAsync().then(
-    //   (token) => setExpoPushToken(token),
-    //   (error) => setError(error)
-    // );
-
     const initializeNotifications = async () => {
       try {
         // Request and set push notification token
@@ -70,6 +65,7 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({
           // Send the token and location to backend
           await sendPushTokenToBackend(token, currentLocation);
           console.log(currentLocation);
+          console.log("Sending location:", currentLocation.coords.latitude, currentLocation.coords.longitude);
         } else {
           throw new Error("Location permission not granted");
         }

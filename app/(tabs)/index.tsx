@@ -1,14 +1,14 @@
-import { useEffect, useState } from "react";
-import { Alert, Button, Platform, SafeAreaView, StatusBar } from "react-native";
+import { Platform, SafeAreaView, StatusBar } from "react-native";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { useNotification } from "@/context/NotificationContext";
+import { Header } from "@/components/Header";
+import { StatusDisplay } from "@/components/StatusDisplay";
+import { PositionInfo } from "@/components/PositionInfo";
 
 export default function HomeScreen() {
-  const { notification, expoPushToken, error } = useNotification();
-  
-
-  const [dummyState, setDummyState] = useState(0);
+  const { error } = useNotification();
+  const isVitaminDSynthesisPossible = true;
 
   if (error) {
     return <ThemedText>Error: {error.message}</ThemedText>;
@@ -23,17 +23,12 @@ export default function HomeScreen() {
       }}
     >
       <SafeAreaView style={{ flex: 1 }}>
-        <ThemedText type="subtitle">Updates Demo 5</ThemedText>
-        <ThemedText type="subtitle" style={{ color: "red" }}>
-          Your push token:
-        </ThemedText>
-        <ThemedText>{expoPushToken}</ThemedText>
-        <ThemedText type="subtitle">Latest notification:</ThemedText>
-        <ThemedText>{notification?.request.content.title}</ThemedText>
-        
-        <ThemedText>
-          {JSON.stringify(notification?.request.content.data, null, 2)}
-        </ThemedText>
+        <Header />
+        <StatusDisplay status={isVitaminDSynthesisPossible} />
+        <PositionInfo    latitude={49.2827}
+      longitude={-123.1207}
+      altitude={35.6}
+      azimuth={120.5} />
       </SafeAreaView>
     </ThemedView>
   );
