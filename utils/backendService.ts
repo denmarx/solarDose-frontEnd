@@ -2,7 +2,7 @@ import { LocationObject } from "expo-location";
 
 export const sendPushTokenToBackend = async (token: string, location: LocationObject) => {
   try {
-    const response = await fetch("https://solardose-backend.onrender.com/api/update-location", {
+    const response = await fetch("https://solardose-backend.vercel.app/api/update-location", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -20,9 +20,15 @@ export const sendPushTokenToBackend = async (token: string, location: LocationOb
       throw new Error("Failed to send push token and location to backend");
     }
 
-    console.log("Push token and location sent to backend successfully");
+    const data = await response.json();
+
+    console.log("Push token, location and sun position sent to backend successfully");
+
+    return data;
+
   } catch (error) {
     console.error("Error sending push token and location to backend:", error);
+    throw error;
   }
 };
 

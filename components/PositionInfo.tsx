@@ -4,14 +4,12 @@ type PositionInfoProps = {
   latitude: number;
   longitude: number;
   altitude: number;
-  azimuth?: number; // Optional
 };
 
 export const PositionInfo: React.FC<PositionInfoProps> = ({
   latitude,
   longitude,
   altitude,
-  azimuth,
 }) => {
   return (
     <View style={styles.container}>
@@ -29,12 +27,6 @@ export const PositionInfo: React.FC<PositionInfoProps> = ({
           <Text style={styles.label}>Sun's Altitude:</Text>
           <Text style={styles.value}>{altitude.toFixed(2)}°</Text>
         </View>
-        {azimuth !== undefined && (
-          <View style={styles.row}>
-            <Text style={styles.label}>Sun's Azimuth:</Text>
-            <Text style={styles.value}>{azimuth.toFixed(2)}°</Text>
-          </View>
-        )}
       </View>
     </View>
   );
