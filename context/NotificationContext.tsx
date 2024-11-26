@@ -44,7 +44,6 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({
     useState<Notifications.Notification | null>(null);
   const [error, setError] = useState<Error | null>(null);
   const [location, setLocation] = useState<Location.LocationObject | null>(null);
-
   const notificationListener = useRef<Subscription>();
   const responseListener = useRef<Subscription>();
 
@@ -63,7 +62,8 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({
           setLocation(currentLocation);
 
           // Send the token and location to backend
-          await sendPushTokenToBackend(token, currentLocation);
+         await sendPushTokenToBackend(token, currentLocation);
+         
           console.log(currentLocation);
           console.log("Sending location:", currentLocation.coords.latitude, currentLocation.coords.longitude);
         } else {
@@ -106,7 +106,7 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({
 
   return (
     <NotificationContext.Provider
-      value={{ expoPushToken, notification, error }}
+    value={{ expoPushToken, notification, error }}
     >
       {children}
     </NotificationContext.Provider>

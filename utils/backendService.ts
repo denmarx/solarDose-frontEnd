@@ -20,11 +20,7 @@ export const sendPushTokenToBackend = async (token: string, location: LocationOb
       throw new Error("Failed to send push token and location to backend");
     }
 
-    const data = await response.json();
-
-    console.log("Push token, location and sun position sent to backend successfully");
-
-    return data;
+    console.log("Push token, location sent to backend successfully");
 
   } catch (error) {
     console.error("Error sending push token and location to backend:", error);
