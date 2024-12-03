@@ -36,7 +36,7 @@ export async function registerForPushNotificationsAsync() {
                     projectId,
                 })
             ).data;
-            console.log(pushTokenString);
+            console.log("from register:",pushTokenString);
             return pushTokenString;
         } catch (e: unknown) {
             
