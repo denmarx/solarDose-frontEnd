@@ -64,3 +64,34 @@ export const getSunPosition = async (token: string) => {
     throw error;
   }
 };
+
+export const getSunAltitudeData = async (token: string) => {
+  try {
+    const response = await fetch("https://solardose-backend.vercel.app/api/get-sun-altitude-data", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "token": token,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch sun altitude data");
+    }
+
+    const data = await response.json();
+
+
+      // Ensure you handle the sunrise and sunset data
+    const { sunrise, sunset, sunAltitudes } = data;
+
+    // Log the sunrise, sunset, and altitude data (optional)
+    console.log("Sunrise:", sunrise);
+    console.log("Sunset:", sunset);
+
+    return { sunrise, sunset, sunAltitudes };
+  } catch (error) {
+    console.error("Error fetching sun position:", error);
+    throw error;
+  }
+};

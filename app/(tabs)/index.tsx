@@ -9,6 +9,8 @@ import { PositionInfo } from "@/components/PositionInfo";
 import { useLocationNotificationController } from "@/components/LocationNotificationController";
 import { getSunInfo, getSunPosition } from '@/utils/backendService';
 import { stopLocationUpdatesAsync } from "expo-location";
+import { SunAltitudeChart } from "@/components/SunAltitudeChart";
+import { getSunAltitudeData } from "@/utils/backendService"
 
 // Define the type for location data
 type LocationData = {
@@ -16,6 +18,13 @@ type LocationData = {
     longitude: number;
     altitude: number;
 } | null;
+
+// Define a type for the sun data
+interface SunData {
+  sunrise: string;
+  sunset: string;
+  sunAltitudes: { time: string; altitude: number }[]; // Array of objects with time and altitude
+}
 
 
 export default function HomeScreen() {
@@ -27,6 +36,7 @@ export default function HomeScreen() {
   const { syncLocationAndNotification } = useLocationNotificationController();
   const [showVitaminDModal, setShowVitaminDModal] = useState(false);
   const [showVitaminDInfo, setShowVitaminDInfo] = useState(false);
+ const [sunData, setSunData] = useState<SunData | null>(null);
 
   const formatDate = (isoDate: string): string => {
   const date = new Date(isoDate); // Convert ISO string to Date object
@@ -38,6 +48,21 @@ export default function HomeScreen() {
       console.log("Push token is not yet available.");  
       return;
     }
+
+if (expoPushToken) {
+  getSunAltitudeData(expoPushToken)
+    .then((data) => {
+      console.log("Sun Data:", data);
+
+      // Destructure the returned data
+      const { sunrise, sunset, sunAltitudes } = data;
+
+      // Set the sun data (including sunrise, sunset, and sun altitudes)
+      setSunData({ sunrise, sunset, sunAltitudes });
+    })
+    .catch(console.error);
+}
+
 
     const fetchSunInfo = async () => {
       try {
@@ -116,7 +141,12 @@ export default function HomeScreen() {
             />   
           )
           }
-        </View>
+          </View>
+{sunData ? (
+  <SunAltitudeChart sunrise={sunData.sunrise} sunset={sunData.sunset} />
+) : (
+  <ActivityIndicator size="large" />
+)}
 
         {/* Model for Vitamin D Alternatives */}
         <Modal
