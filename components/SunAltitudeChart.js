@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, useWindowDimensions } from 'react-native';
 
-export const SunAltitudeChart = ({ sunrise, sunset }) => {
+export const SunAltitudeChart = ({ sunAltitudes, sunrise, sunset }) => {
   const { width: screenWidth } = useWindowDimensions();
   const chartHeight = screenWidth * 0.5;
 

@@ -36,68 +36,76 @@ export default function HomeScreen() {
   const { syncLocationAndNotification } = useLocationNotificationController();
   const [showVitaminDModal, setShowVitaminDModal] = useState(false);
   const [showVitaminDInfo, setShowVitaminDInfo] = useState(false);
- const [sunData, setSunData] = useState<SunData | null>(null);
+  const [sunData, setSunData] = useState<SunData | null>(null);
+
 
   const formatDate = (isoDate: string): string => {
-  const date = new Date(isoDate); // Convert ISO string to Date object
-  return date.toISOString().split("T")[0]; // Extract and return only the date portion (YYYY-MM-DD)
-};
-  
-  useEffect(() => {
-    if (!expoPushToken) {
-      console.log("Push token is not yet available.");  
-      return;
-    }
+    const date = new Date(isoDate); // Convert ISO string to Date object
+    return date.toISOString().split("T")[0]; // Extract and return only the date portion (YYYY-MM-DD)
+  };
 
-if (expoPushToken) {
-  getSunAltitudeData(expoPushToken)
-    .then((data) => {
-      console.log("Sun Data:", data);
-
-      // Destructure the returned data
-      const { sunrise, sunset, sunAltitudes } = data;
-
-      // Set the sun data (including sunrise, sunset, and sun altitudes)
-      setSunData({ sunrise, sunset, sunAltitudes });
-    })
-    .catch(console.error);
-}
-
-
-    const fetchSunInfo = async () => {
-      try {
-        const date = await getSunInfo(expoPushToken); // Fetch nextPossibleDate from backend
-        const formattedDate = formatDate(date); 
+  // fetch nextPossibleDate from backend and sets it
+  // determines if Vitamin D synthesis is possible
+  // and shows a modal if not
+  const fetchSunInfo = async (expoPushToken: string) => {
+    try {
+      const date = await getSunInfo(expoPushToken); // Fetch nextPossibleDate from backend
+      const formattedDate = formatDate(date); 
         setNextPossibleDate(formattedDate);
 
-        // Determine if Vitamin D synthesis is possible
-        const today = new Date();
-        const nextDate = new Date(date);
-        setIsVitaminDSynthesisPossible(nextDate <= today); // If the next date is today or in the past, synthesis is possible
-        if (nextDate > today) {
-          setShowVitaminDModal(true); // Show modal if Vitamin D synthesis is not possible because of location or season
-        }
-      } catch (error) {
-        console.log("Error fetching sun info", error);
-      } 
-    };
-
-    const fetchSunPosition = async () => {
-      try {
-        const sunPositionData = await getSunPosition(expoPushToken);
-        const { latitude, longitude, sunAltitude } = sunPositionData;
-        setLocationData({latitude, longitude, altitude: sunAltitude});
-      } catch (error) {
-        console.log("Error fetching sun position", error);
-      } finally {
-        setLoading(false);
+      // Determine if Vitamin D synthesis is possible
+      const today = new Date();
+      const nextDate = new Date(date);
+      setIsVitaminDSynthesisPossible(nextDate <= today); // If the next date is today or in the past, synthesis is possible
+      if (nextDate > today) {
+        setShowVitaminDModal(true); // Show modal if Vitamin D synthesis is not possible because of location or season
       }
-    };
+    } catch (error) {
+      console.log("Error fetching sun info", error);
+    }
+  };
 
-    fetchSunInfo();
-    fetchSunPosition();
-    syncLocationAndNotification();
-}, [expoPushToken]);
+  // Fetch sun position data from backend
+  // and sets the location data
+  const fetchSunPosition = async (expoPushToken: string) => {
+    try {
+      const sunPositionData = await getSunPosition(expoPushToken);
+      const { latitude, longitude, sunAltitude } = sunPositionData;
+      setLocationData({ latitude, longitude, altitude: sunAltitude });
+    } catch (error) {
+      console.log("Error fetching sun position", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+    
+  useEffect(() => {
+    if (!expoPushToken) return; 
+      getSunAltitudeData(expoPushToken)
+        .then((data) => {
+          console.log("Sun Data:", data);
+          // Destructure the returned data
+          const { sunrise, sunset, sunAltitudes } = data;
+          // Set the sun data (including sunrise, sunset, and sun altitudes)
+          setSunData({ sunrise, sunset, sunAltitudes });
+        })
+        .catch(console.error);
+    }, [expoPushToken]);
+    
+    useEffect(() => {
+      if (!expoPushToken) return;
+      fetchSunInfo(expoPushToken);
+    }, [expoPushToken]);
+  
+    useEffect(() => {
+      if (!expoPushToken) return;
+      fetchSunPosition(expoPushToken);
+    }, [expoPushToken]);
+
+    useEffect(() => {
+      if (!expoPushToken) return;
+      syncLocationAndNotification();
+    }, [expoPushToken]);
 
   if (error) {
     return <ThemedText>Error: {error.message}</ThemedText>;
@@ -142,11 +150,11 @@ if (expoPushToken) {
           )
           }
           </View>
-{sunData ? (
-  <SunAltitudeChart sunrise={sunData.sunrise} sunset={sunData.sunset} />
+{/* {sunData ? (
+  <SunAltitudeChart sunAltitudes={sunData.sunAltitudes} sunrise={sunData.sunrise} sunset={sunData.sunset} />
 ) : (
   <ActivityIndicator size="large" />
-)}
+)} */}
 
         {/* Model for Vitamin D Alternatives */}
         <Modal
