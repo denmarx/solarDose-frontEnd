@@ -1,6 +1,7 @@
 import { LocationObject } from "expo-location";
+export type SimpleLocation = { latitude: number; longitude: number};
 
-export const syncUserDataToBackend = async (token: string, location: LocationObject) => {
+export const syncUserDataToBackend = async (token: string, location: SimpleLocation) => {
   try {
     await fetch("https://solardose-backend.vercel.app/api/update-location", {
       method: "POST",
@@ -10,8 +11,8 @@ export const syncUserDataToBackend = async (token: string, location: LocationObj
       body: JSON.stringify({
         token,
         location: {
-          latitude: location.coords.latitude,
-          longitude: location.coords.longitude,
+          latitude: location.latitude,
+          longitude: location.longitude,
         },
       }),
     });
@@ -21,9 +22,9 @@ export const syncUserDataToBackend = async (token: string, location: LocationObj
   }
 };
 
-export const getSunInfo = async (token: string) => {
+export const getNextPossibleDate = async (token: string) => {
   try {
-    const response = await fetch("https://solardose-backend.vercel.app/api/get-sun-info", {
+    const response = await fetch("https://solardose-backend.vercel.app/api/get-next-possible-date", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -43,9 +44,9 @@ export const getSunInfo = async (token: string) => {
   }
 };
 
-export const getSunPosition = async (token: string) => {
+export const getSunAltitude= async (token: string) => {
   try {
-    const response = await fetch("https://solardose-backend.vercel.app/api/get-sun-position", {
+    const response = await fetch("https://solardose-backend.vercel.app/api/get-sun-altitude", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -54,13 +55,13 @@ export const getSunPosition = async (token: string) => {
     });
 
     if (!response.ok) {
-      throw new Error("Failed to fetch sun position");
+      throw new Error("Failed to fetch sun's altitude");
     }
 
     const data = await response.json();
-    return data;
+    return data.sunAltitude;
   } catch (error) {
-    console.error("Error fetching sun position:", error);
+    console.error("Error fetching sun' altitude:", error);
     throw error;
   }
 };

@@ -13,7 +13,7 @@ export const PositionInfo: React.FC<PositionInfoProps> = ({
 }) => {
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Position Information</Text>
+      <Text style={styles.header}>Sun's Altitude at Your Position</Text>
       <View style={styles.infoContainer}>
         <View style={styles.row}>
           <Text style={styles.label}>Latitude:</Text>
