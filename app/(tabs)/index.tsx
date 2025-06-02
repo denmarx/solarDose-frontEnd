@@ -14,6 +14,8 @@ import { getLocales  } from 'expo-localization';
 import { I18n } from 'i18n-js';
 import en from '@/locales/en.json';
 import de from '@/locales/de.json';
+import PagerView from "react-native-pager-view";
+import { SunAltitudeChart } from "@/components/SunAltitudeChart";
 
 const i18n = new I18n({en, de});
 
@@ -36,7 +38,6 @@ interface SunData {
 
 export default function HomeScreen() {
   const { error, expoPushToken } = useNotification(); // get the expoPushToken
-  // const { t } = useTranslation(); // Initialize translation function
   const [location, setLocation] = useState<LocationData | null>(null);
   const [isSynced, setIsSynced] = useState(false);
   const [nextPossibleDate, setNextPossibleDate] = useState<string | null>(null); 
@@ -207,15 +208,21 @@ export default function HomeScreen() {
           )}
            {location && 
             (
+            <PagerView style={{ flex: 1, height: 180 }} initialPage={0}>
+              <View key="1">
               <PositionInfo
               latitude={location.latitude}
               longitude={location.longitude}
               altitude={sunAltitude}
-            />   
+                />  
+              </View>
+              
+              </PagerView>
           )
           }
-          </View>
-{/* {sunData ? (
+        </View>
+{/*         
+{sunData ? (
   <SunAltitudeChart sunAltitudes={sunData.sunAltitudes} sunrise={sunData.sunrise} sunset={sunData.sunset} />
 ) : (
   <ActivityIndicator size="large" />
