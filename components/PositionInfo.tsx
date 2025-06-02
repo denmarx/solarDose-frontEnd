@@ -1,4 +1,14 @@
 import { View, Text, StyleSheet } from "react-native";
+import { getLocales  } from 'expo-localization';
+import { I18n } from 'i18n-js';
+import en from '@/locales/en.json';
+import de from '@/locales/de.json';
+
+const i18n = new I18n({en, de});
+
+i18n.locale = getLocales()[0].languageCode ?? 'en';
+
+i18n.enableFallback = true; // Enable fallback to default language if translation is not available
 
 type PositionInfoProps = {
   latitude: number;
@@ -13,18 +23,18 @@ export const PositionInfo: React.FC<PositionInfoProps> = ({
 }) => {
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Sun's Altitude at Your Position</Text>
+      <Text style={styles.header}>{i18n.t("positionHeadline")}</Text>
       <View style={styles.infoContainer}>
         <View style={styles.row}>
-          <Text style={styles.label}>Latitude:</Text>
+          <Text style={styles.label}>{i18n.t("latitude")}</Text>
           <Text style={styles.value}>{latitude.toFixed(4)}°</Text>
         </View>
         <View style={styles.row}>
-          <Text style={styles.label}>Longitude:</Text>
+          <Text style={styles.label}>{i18n.t("longitude")}</Text>
           <Text style={styles.value}>{longitude.toFixed(4)}°</Text>
         </View>
         <View style={styles.row}>
-          <Text style={styles.label}>Sun's Altitude:</Text>
+          <Text style={styles.label}>{i18n.t("altitude")}</Text>
           <Text style={styles.value}>{altitude.toFixed(2)}°</Text>
         </View>
       </View>

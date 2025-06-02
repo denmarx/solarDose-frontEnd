@@ -9,6 +9,17 @@ import { syncLocationAndNotification } from "@/components/LocationNotificationCo
 import { getNextPossibleDate, getSunAltitude } from '@/utils/backendService';
 import { getLocationAsync } from "@/utils/locationHelper";
 import { AppState } from "react-native";
+// import '@/utils/i18n'; // Import i18n for translations
+import { getLocales  } from 'expo-localization';
+import { I18n } from 'i18n-js';
+import en from '@/locales/en.json';
+import de from '@/locales/de.json';
+
+const i18n = new I18n({en, de});
+
+i18n.locale = getLocales()[0].languageCode ?? 'en';
+
+i18n.enableFallback = true; // Enable fallback to default language if translation is not available
 
 // Define the type for location data 
 type LocationData = {
@@ -25,6 +36,7 @@ interface SunData {
 
 export default function HomeScreen() {
   const { error, expoPushToken } = useNotification(); // get the expoPushToken
+  // const { t } = useTranslation(); // Initialize translation function
   const [location, setLocation] = useState<LocationData | null>(null);
   const [isSynced, setIsSynced] = useState(false);
   const [nextPossibleDate, setNextPossibleDate] = useState<string | null>(null); 
@@ -58,6 +70,19 @@ export default function HomeScreen() {
   const handleVitaminDModal = (isPossible: boolean) => {
     if (!isPossible) setShowVitaminDModal(true);
   };
+
+  const updateLocationIfChanged = (newLoc: { latitude: number; longitude: number }) => {
+    setLocation((prev) => {
+      if (
+        !prev ||
+        prev.latitude !== newLoc.latitude ||
+        prev.longitude !== newLoc.longitude
+      ) {
+        return newLoc;
+      }
+      return prev;
+    });
+  };
     
   // 1. Fetch location when the app is in the foreground
   useEffect(() => {
@@ -66,7 +91,7 @@ export default function HomeScreen() {
         (async () => {
           try {
             const loc = await getLocationAsync();
-            setLocation({
+            updateLocationIfChanged({
               latitude: loc.coords.latitude,
               longitude: loc.coords.longitude,
             });
@@ -87,7 +112,7 @@ export default function HomeScreen() {
         const loc = await getLocationAsync();
         console.log("Location fetched:", loc);
         console.log("Expo Push Token:", expoPushToken);
-        setLocation({
+        updateLocationIfChanged({
           latitude: loc.coords.latitude,
           longitude: loc.coords.longitude,
         });
@@ -101,7 +126,7 @@ export default function HomeScreen() {
     };
   }, [expoPushToken]);
     
-  // 2. Sync , when expoPushToken and location are available
+  // 2. Sync , when expoPushToken and location are available or when location changes
   useEffect(() => {
     if (!expoPushToken || !location) return;
     (async () => {
@@ -154,7 +179,7 @@ export default function HomeScreen() {
     return (
       <ThemedView style={styles.loaderContainer}>
         <ActivityIndicator size="large" color="#007ACC" />
-        <ThemedText style={styles.loadingText}>Loading data, please wait...</ThemedText>
+        <ThemedText style={styles.loadingText}>{i18n.t('loading')}</ThemedText>
       </ThemedView>
     );
   }
@@ -167,20 +192,17 @@ export default function HomeScreen() {
           {isVitaminDSynthesisPossible === false && (
             <View style={styles.notification}>
               <ThemedText style={styles.notificationText}>
-                Vitamin D synthesis is not possible at your location. It is likely winter or the sun will not reach sufficient altitude.
+                {i18n.t('failureText ')}
               </ThemedText>
               <ThemedText style={styles.nextDateText}>
-                The sun will reach the altitude required for Vitamin D synthesis again on {nextPossibleDate}. We will notify you once it happens.
+                {i18n.t('nextDateText', { date: nextPossibleDate})}
               </ThemedText>
               </View>
           )}
           {isVitaminDSynthesisPossible && (
             <ThemedText style={styles.successText}>
-              Did you know that Vitamin D is essential for your health? Your skin can produce it only when the sun is high enough in the sky — usually around midday.
-              {"\n\n"}
-              Depending on your location, this window when Vitamin D production is possible can be very short, so it is important to time it right.
-              {"\n\n"}
-              Our app will notify you as soon as this window opens, even if you are not actively using it at that moment.
+              {i18n.t('successText')}
+
             </ThemedText>
           )}
            {location && 
@@ -208,7 +230,7 @@ export default function HomeScreen() {
         >
           <View style={styles.modalContainer}>
             <ThemedText style={styles.modalText}>
-              Vitamin D synthesis is not possible at your location. Would you like to learn about Vitamin D alternatives?
+             {i18n.t('modalText')}
             </ThemedText>
             <View style={styles.buttonContainer}>
               <Button
@@ -232,10 +254,7 @@ export default function HomeScreen() {
         >
           <SafeAreaView style={styles.infoContainer}>
             <ThemedText style={styles.infoText}>
-              Vitamin D Alternatives:
-              {"\n\n"}1. **Supplements**: Consult a healthcare provider to determine the correct dosage.
-              {"\n\n"}2. **Blood Levels**: Regularly check your Vitamin D levels through blood tests.
-              {"\n\n"}3. **Foods**: Incorporate Vitamin D-rich foods like fatty fish, fortified dairy, and eggs into your diet.
+              {i18n.t('infoText')}
             </ThemedText>
             <Button title="Close" onPress={() => setShowVitaminDInfo(false)} />
           </SafeAreaView>

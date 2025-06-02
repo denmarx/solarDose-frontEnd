@@ -1,0 +1,12 @@
+{
+    "loading": "Daten werden geladen, bitte warten...",
+    "successText": "Wusstest du, dass Vitamin D entscheidend für deine Gesundheit ist? Deine Haut bildet es nur, wenn die Sonne hoch genug steht – meist um die Mittagszeit.\n\nJe nach Standort ist dieses Zeitfenster kurz. Unsere App sagt dir Bescheid, sobald es losgeht – auch wenn du sie gerade nicht nutzt.",
+    "failureText": "An deinem Standort ist derzeit keine Vitamin-D-Synthese möglich. Wahrscheinlich ist Winter oder die Sonne steht zu tief.",
+    "nextDateText": "Am {{nextPossibleDate}} erreicht die Sonne wieder die nötige Höhe für die Vitamin-D-Synthese. Wir benachrichtigen dich, sobald es soweit ist.",
+    "modalText": "Die Vitamin-D-Synthese ist an deinem Standort nicht möglich. Möchtest du mehr über Vitamin D-Alternativen erfahren?",
+    "infoText": "Vitamin D Alternativen:\n\n1. **Ernährung**: Fette Fische (Lachs, Makrele), Lebertran, Eigelb und angereicherte Lebensmittel (z.B. Milchprodukte).\n2. **Supplemente**: Vitamin D3-Präparate sind eine gute Option, besonders in den Wintermonaten.\n3. **UV-Lampen**: Spezielle UV-Lampen können helfen, Vitamin D zu synthetisieren, wenn Sonnenlicht fehlt.",
+    "positionHeadline": "Sonnenhöhe an deinem Standort",
+    "latitude": "Breitengrad:",
+    "longitude": "Längengrad:",
+    "altitude": "Sonnenhöhe:"
+}

@@ -1,0 +1,12 @@
+{
+    "loading": "Loading data, please wait...",
+    "successText": "Did you know that Vitamin D is essential for your health? Your skin can produce it only when the sun is high enough in the sky — usually around midday.\n\n Depending on your location, this window when Vitamin D production is possible can be very short, so it is important to time it right.\n\nOur app will notify you as soon as this window opens, even if you are not actively using it at that moment.",
+    "failureText": "Vitamin D synthesis is not possible at your location. It is likely winter or the sun will not reach sufficient altitude.",
+    "nextDateText": "The sun will reach the altitude required for Vitamin D synthesis again on {{nextPossibleDate}}. We will notify you once it happens.",
+    "modalText": "Vitamin D synthesis is not possible at your location. Would you like to learn about Vitamin D alternatives?",
+    "infoText": "Vitamin D Alternatives:\n\n1. **Diet**: Fatty fish (like salmon and mackerel), cod liver oil, egg yolks, and fortified foods (like dairy products).\n2. **Supplements**: Vitamin D3 supplements are a good option, especially during the winter months.\n3. **UV Lamps**: Special UV lamps can help synthesize Vitamin D when sunlight is not available.",
+    "positionHeadline": "Sun's Altitude at Your Position",
+    "latitude": "Latitude:",
+    "longitude": "Longitude:",
+    "altitude": "Sun's Altitude:"
+}
