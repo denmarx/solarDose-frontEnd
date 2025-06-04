@@ -46,6 +46,7 @@ export default function HomeScreen() {
   const [showVitaminDModal, setShowVitaminDModal] = useState(false);
   const [showVitaminDInfo, setShowVitaminDInfo] = useState(false);
   const [sunAltitude, setSunAltitude] = useState<number>(0);
+  const [sunData, setSunData] = useState<SunData | null>(null);
 
   // fetch nextPossibleDate from backend and sets it
   // determines if Vitamin D synthesis is possible
@@ -140,6 +141,27 @@ export default function HomeScreen() {
     })();
   }, [expoPushToken, location]);
 
+  useEffect(() => {
+    if (!isSynced || !expoPushToken) return;
+    (async () => {
+      try {
+        // Hier rufst du deinen Endpunkt auf
+        const response = await fetch('https://solardose-backend.vercel.app/api/get-sun-altitude-data', {
+          method: 'GET',
+          headers: {
+            'token': expoPushToken,
+          },
+        });
+        if (!response.ok) throw new Error('Failed to fetch sun altitude data');
+        const data = await response.json();
+        setSunData(data);
+        console.log('Sun altitude data loaded successfully', data);
+      } catch (e) {
+        console.log('Error while loading sun altitude data', e);
+      }
+    })();
+  }, [isSynced, expoPushToken]);
+
   // 3. Fetch nextPossibleDate and check if Vitamin D synthesis is possible
   // and show a modal if not
   useEffect(() => {
@@ -208,16 +230,27 @@ export default function HomeScreen() {
           )}
            {location && 
             (
-            <PagerView style={{ flex: 1, height: 180 }} initialPage={0}>
+              <PagerView style={{ flex: 1, height: 180 }} initialPage={0}>
+
               <View key="1">
-              <PositionInfo
-              latitude={location.latitude}
-              longitude={location.longitude}
-              altitude={sunAltitude}
-                />  
+                {sunData ? (
+                  <SunAltitudeChart
+                    sunAltitudes={sunData.sunAltitudes}
+                    sunrise={sunData.sunrise}
+                    sunset={sunData.sunset}
+                  />
+                ) : (
+                  <ActivityIndicator size="large" />
+                )}
               </View>
-              
-              </PagerView>
+              <View key="2">
+                <PositionInfo
+                  latitude={location.latitude}
+                  longitude={location.longitude}
+                  altitude={sunAltitude}
+                />
+              </View>
+            </PagerView>
           )
           }
         </View>
